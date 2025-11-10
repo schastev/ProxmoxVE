@@ -43,30 +43,8 @@ $STD apt install -y \
   ghostscript
 msg_ok "Installed Dependencies"
 
-PG_VERSION="16" setup_postgresql
 PYTHON_VERSION="3.13" setup_uv
 fetch_and_deploy_gh_release "paperless" "paperless-ngx/paperless-ngx" "prebuild" "latest" "/opt/paperless" "paperless*tar.xz"
-
-msg_info "Setting up PostgreSQL database"
-DB_NAME=paperlessdb
-DB_USER=paperless
-DB_PASS="$(openssl rand -base64 18 | cut -c1-13)"
-SECRET_KEY="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)"
-$STD sudo -u postgres psql -c "CREATE ROLE $DB_USER WITH LOGIN PASSWORD '$DB_PASS';"
-$STD sudo -u postgres psql -c "CREATE DATABASE $DB_NAME WITH OWNER $DB_USER ENCODING 'UTF8' TEMPLATE template0;"
-$STD sudo -u postgres psql -c "ALTER ROLE $DB_USER SET client_encoding TO 'utf8';"
-$STD sudo -u postgres psql -c "ALTER ROLE $DB_USER SET default_transaction_isolation TO 'read committed';"
-$STD sudo -u postgres psql -c "ALTER ROLE $DB_USER SET timezone TO 'UTC'"
-{
-  echo "Paperless-ngx-Credentials"
-  echo "Paperless-ngx Database Name: $DB_NAME"
-  echo "Paperless-ngx Database User: $DB_USER"
-  echo "Paperless-ngx Database Password: $DB_PASS"
-  echo "Paperless-ngx Secret Key: $SECRET_KEY\n"
-  echo "Paperless-ngx WebUI User: admin"
-  echo "Paperless-ngx WebUI Password: $DB_PASS"
-} >>~/paperless-ngx.creds
-msg_ok "Setup PostgreSQL database"
 
 msg_info "Setup Paperless-ngx"
 cd /opt/paperless
