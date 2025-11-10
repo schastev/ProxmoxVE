@@ -46,6 +46,11 @@ msg_ok "Installed Dependencies"
 PYTHON_VERSION="3.13" setup_uv
 fetch_and_deploy_gh_release "paperless" "paperless-ngx/paperless-ngx" "prebuild" "latest" "/opt/paperless" "paperless*tar.xz"
 
+msg_info "Setting up PostgreSQL database"
+cd /opt/paperless/src
+$STD sudo -Hu paperless python3 manage.py migrate
+msg_ok "Setup PostgreSQL database"
+
 msg_info "Setup Paperless-ngx"
 cd /opt/paperless
 $STD uv sync --all-extras
