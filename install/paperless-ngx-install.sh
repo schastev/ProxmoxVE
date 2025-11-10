@@ -93,17 +93,6 @@ set +a
 $STD uv run -- python manage.py migrate
 msg_ok "Setup Paperless-ngx"
 
-msg_info "Setting up admin Paperless-ngx User & Password"
-cat <<EOF | uv run -- python /opt/paperless/src/manage.py shell
-from django.contrib.auth import get_user_model
-UserModel = get_user_model()
-user = UserModel.objects.create_user('admin', password='$DB_PASS')
-user.is_superuser = True
-user.is_staff = True
-user.save()
-EOF
-msg_ok "Set up admin Paperless-ngx User & Password"
-
 msg_info "Installing Natural Language Toolkit (Patience)"
 cd /opt/paperless
 $STD uv run python -m nltk.downloader -d /usr/share/nltk_data snowball_data
