@@ -48,7 +48,7 @@ fetch_and_deploy_gh_release "paperless" "paperless-ngx/paperless-ngx" "prebuild"
 
 msg_info "Setting up PostgreSQL database"
 cd /opt/paperless/src
-$STD sudo -Hu paperless python manage.py migrate
+$STD python manage.py migrate
 msg_ok "Setup PostgreSQL database"
 
 msg_info "Setup Paperless-ngx"
